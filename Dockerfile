@@ -2,4 +2,4 @@
 FROM nginx:latest
 
 # Changing INDEX Page
-COPY ./index.html /usr/share/nginx/html/index.htm
+COPY ./index.html /usr/share/nginx/html/index.html
