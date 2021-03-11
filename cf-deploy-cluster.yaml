@@ -1,0 +1,55 @@
+version: '1.0'
+stages:
+  - checkout
+  - build
+  - push
+  - test
+  - deploy
+steps:
+  main_clone:
+    title: Cloning main repository...
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_REVISION}}'
+    stage: checkout
+  buildImage:
+    title: Building Docker Image
+    type: build
+    stage: build
+    image_name: "wawa-dt-poc"
+    working_directory: ./
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    dockerfile: Dockerfile
+    disable_push: true
+    registry: "wawa-dt-poc"
+  pushImagesToECR:
+    title: "Pushing image to ECR"
+    stage: "push"
+    type: "push"
+    candidate: '${{buildImage}}'
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    registry: "wawa-dt-poc"
+  test:
+    title: "Running test"
+    type: "freestyle" # Run any command
+    image: "ubuntu:latest" # The image in which command will be executed
+    working_directory: "${{main_clone}}" # Running command where code cloned
+    commands:
+      - "ls"
+    stage: "test"
+  deploy:
+    title: "Deploying to Amazon EKS"
+    timeout: '300'
+    stage: "deploy"
+    type: "deploy"
+    kind: "kubernetes"
+    namespace: "nginx-ns"
+    cluster: "amazon_eks"
+    file_path: ./deployment-nginx.yaml
+    # Need to uncomment if service and deployment is created and need to use different registry defined in Pipeline steps
+    
+    #service: "nginx-service"    
+    #candidate:
+      #image: "${{buildImage}}"
+      #registry: "wawa-dt-poc"
+    
