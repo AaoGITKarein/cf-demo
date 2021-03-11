@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: ngnx-deploy
   labels:
     app: nginx
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: nginx
@@ -24,7 +24,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
+  name: ngnx-svc
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
 spec:
   type: LoadBalancer
   selector:
