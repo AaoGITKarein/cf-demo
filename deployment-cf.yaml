@@ -4,16 +4,16 @@ kind: Deployment
 metadata:
   name: nginx-deployment
   labels:
-    app: nginx-app
+    app: nginx
 spec:
   replicas: {{REPLICA_NUMBER}}
   selector:
     matchLabels:
-      app: nginx-app
+      app: nginx
   template:
     metadata:
       labels:
-        app: nginx-app
+        app: nginx
     spec:
       containers:
       - name: nginx
@@ -30,7 +30,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: nginx-app
+    app: nginx
   ports:
     - protocol: TCP
       port: {{SERVICE_PORT}}
