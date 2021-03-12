@@ -20,16 +20,3 @@ spec:
         image: {{AWS_ACCOUNT}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{REGISTRY_NAME}}:{{CF_BRANCH_TAG_NORMALIZED}}-{{CF_SHORT_REVISION}}
         ports:
         - containerPort: {{CONTAINER_PORT}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: nginx-app
-  ports:
-    - protocol: TCP
-      port: {{SERVICE_PORT}}
-      targetPort: {{TARGET_PORT}}
